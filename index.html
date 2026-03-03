@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>우드티켓 - 정식등록업체 상품권 매입</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="description" content="정식등록업체 우드티켓 - 각종 상품권 매입 전문 업체. 24시간 빠르고 안전한 상품권 매입" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #ffffff;
+      color: #222;
+      line-height: 1.5;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ========================
+       HEADER 고정형
+    ======================== */
+    #site-header {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: #ffffff;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-logo img {
+      height: 42px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .header-btns {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .header-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    .header-btn:hover  { transform: translateY(-2px); filter: brightness(1.06); }
+    .header-btn:active { transform: translateY(0); }
+
+    .header-btn-tel {
+      background: linear-gradient(135deg, #00CDD8, #009FBD);
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(0,205,216,0.38);
+    }
+
+    .header-btn-kakao {
+      background: linear-gradient(135deg, #FFE500, #FFDA00);
+      color: #3B1E00;
+      box-shadow: 0 3px 12px rgba(255,229,0,0.42);
+    }
+
+    /* ========================
+       MAIN
+    ======================== */
+    #site-main {
+      padding-top: 68px;
+    }
+
+    .body-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #fff;
+    }
+
+    /* ========================
+       이미지 + 오버레이
+    ======================== */
+    .main-image-wrap {
+      position: relative;
+      width: 100%;
+      line-height: 0; /* 이미지 하단 여백 제거 */
+    }
+
+    .main-img {
+      display: block;
+      width: 100%;
+      height: auto;
+      /* 고해상도 이미지 선명하게 렌더링 */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+
+    /*
+    ┌─────────────────────────────────────────────┐
+    │ 업스케일 이미지 960×4096px 기준               │
+    │                                             │
+    │ 섹션1 (고객센터) 버튼:                        │
+    │  - Y: 18.5% ~ 22.0%                         │
+    │  - 전화  : left 1.9%,  width 48.8%          │
+    │  - 카카오: left 50.8%, width 46.8%          │
+    │                                             │
+    │ 섹션2 (하단 마지막) 버튼:                     │
+    │  - Y: 94.3% ~ 97.6%                         │
+    │  - 전화  : left 1.9%,  width 48.8%          │
+    │  - 카카오: left 50.8%, width 46.8%          │
+    └─────────────────────────────────────────────┘
+    */
+
+    .img-overlay {
+      position: absolute;
+      display: block;
+      background: transparent;
+      cursor: pointer;
+      /* hover 시 살짝 밝게 */
+      transition: background 0.18s ease;
+    }
+    .img-overlay:hover  { background: rgba(255,255,255,0.07); }
+    .img-overlay:active { background: rgba(255,255,255,0.14); }
+
+    /* 새 이미지 1080×4611px 기준
+       섹션1 (고객센터): Y 18.7%~21.6%  전화:left 1.9% 카카오:left 50.8%
+       섹션2 (하단마지막): Y 94.4%~97.4% 전화:left 1.9% 카카오:left 50.8% */
+
+    /* 섹션1 전화 */
+    .ov-tel-1   { top:18.7%; left:1.9%;  width:48.2%; height:3.0%; }
+    /* 섹션1 카카오 */
+    .ov-kko-1   { top:18.7%; left:50.8%; width:47.1%; height:3.0%; }
+    /* 섹션2 전화 */
+    .ov-tel-2   { top:94.4%; left:1.9%;  width:48.2%; height:3.0%; }
+    /* 섹션2 카카오 */
+    .ov-kko-2   { top:94.4%; left:50.8%; width:47.1%; height:3.0%; }
+
+    /* ========================
+       FOOTER
+    ======================== */
+    #site-footer {
+      background: #16162a;
+      color: #9090a8;
+      padding: 52px 24px 44px;
+      text-align: center;
+    }
+
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+
+    .footer-logo { margin-bottom: 6px; }
+    .footer-logo img {
+      height: 46px;
+      width: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.80;
+    }
+
+    .footer-bar {
+      width: 52px; height: 2px;
+      background: linear-gradient(90deg, #00CDD8, #FFE500);
+      border-radius: 2px;
+      margin: 18px auto 20px;
+    }
+
+    .footer-info { font-size: 13.5px; line-height: 1.9; font-style: normal; }
+    .footer-rep  { font-size: 15px; font-weight: 700; color: #c8c8d8; margin-bottom: 6px; }
+
+    .footer-biz {
+      display: flex; flex-wrap: wrap;
+      justify-content: center;
+      gap: 0 10px;
+      color: #888898;
+    }
+
+    .footer-copy {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #55556a;
+    }
+
+    /* ========================
+       FLOATING BUTTONS
+    ======================== */
+    .floating-wrap {
+      position: fixed;
+      bottom: 28px;
+      right: 22px;
+      z-index: 990;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      align-items: flex-end;
+    }
+
+    .float-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 13px 20px 13px 15px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 0 6px 22px rgba(0,0,0,0.22);
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.2s ease, filter 0.2s ease;
+      animation: slideIn 0.45s ease-out both;
+      overflow: hidden;
+    }
+
+    .float-btn:nth-child(1) { animation-delay: 0.15s; }
+    .float-btn:nth-child(2) { animation-delay: 0.28s; }
+
+    @keyframes slideIn {
+      from { opacity:0; transform:translateX(50px); }
+      to   { opacity:1; transform:translateX(0); }
+    }
+
+    .float-btn:hover  { transform:translateY(-4px) scale(1.04); filter:brightness(1.07); }
+    .float-btn:active { transform:translateY(-1px) scale(1.01); }
+
+    /* 빛 번짐 shine 효과 */
+    .float-btn::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -60%;
+      width: 40%; height: 200%;
+      background: rgba(255,255,255,0.22);
+      transform: skewX(-20deg);
+      transition: left 0.4s ease;
+      pointer-events: none;
+    }
+    .float-btn:hover::before { left: 130%; }
+
+    .float-btn-tel {
+      background: linear-gradient(135deg, #00CDD8, #008FAD);
+      color: #fff;
+      box-shadow: 0 6px 22px rgba(0,205,216,0.46);
+    }
+
+    .float-btn-kakao {
+      background: linear-gradient(135deg, #FFE500, #FFCD00);
+      color: #3B1E00;
+      box-shadow: 0 6px 22px rgba(255,229,0,0.5);
+    }
+
+    /* 펄스 링 */
+    .float-btn-tel::after,
+    .float-btn-kakao::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50px;
+      pointer-events: none;
+    }
+    .float-btn-tel::after   { animation: pulseTeal   2.8s ease-out infinite; }
+    .float-btn-kakao::after { animation: pulseYellow 2.8s ease-out infinite 0.6s; }
+
+    @keyframes pulseTeal {
+      0%   { box-shadow: 0 0 0 0   rgba(0,205,216,0.50); }
+      70%  { box-shadow: 0 0 0 14px rgba(0,205,216,0); }
+      100% { box-shadow: 0 0 0 0   rgba(0,205,216,0); }
+    }
+    @keyframes pulseYellow {
+      0%   { box-shadow: 0 0 0 0   rgba(255,229,0,0.50); }
+      70%  { box-shadow: 0 0 0 14px rgba(255,229,0,0); }
+      100% { box-shadow: 0 0 0 0   rgba(255,229,0,0); }
+    }
+
+    .float-icon {
+      width: 26px; height: 26px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .float-icon svg { width: 21px; height: 21px; }
+
+    /* ========================
+       RESPONSIVE
+    ======================== */
+
+    /* 태블릿 */
+    @media (max-width: 768px) {
+      .header-inner { height: 56px; padding: 0 16px; }
+      .header-logo img { height: 34px; }
+      #site-main { padding-top: 56px; }
+
+      .header-btns { gap: 8px; }
+      .header-btn {
+        width: 42px; height: 42px;
+        padding: 0;
+        border-radius: 50%;
+        justify-content: center;
+        gap: 0;
+      }
+      .header-btn svg { width: 20px; height: 20px; }
+      .header-btn-text { display: none; }
+
+      .floating-wrap { bottom: 18px; right: 14px; gap: 9px; }
+      .float-btn { padding: 12px 16px; font-size: 13px; gap: 8px; }
+    }
+
+    /* 모바일 소형 */
+    @media (max-width: 480px) {
+      .header-inner { height: 52px; padding: 0 12px; }
+      .header-logo img { height: 30px; }
+      #site-main { padding-top: 52px; }
+
+      .floating-wrap { bottom: 14px; right: 10px; gap: 8px; }
+      .float-btn { padding: 11px 14px; font-size: 12.5px; gap: 7px; }
+      .float-icon svg { width: 18px; height: 18px; }
+    }
+
+    /* PC 최대 너비 그림자 */
+    @media (min-width: 1200px) {
+      .body-container { box-shadow: 0 0 48px rgba(0,0,0,0.09); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header id="site-header" role="banner">
+    <div class="header-inner">
+
+      <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" class="header-logo" aria-label="우드티켓 홈으로">
+        <img src="7zmbyuco.png" alt="우드티켓 WOODTICKET 로고" width="160" height="42" />
+      </a>
+
+      <nav class="header-btns" aria-label="빠른 상담">
+
+        <a href="tel:010-2969-2842"
+           class="header-btn header-btn-tel"
+           rel="nofollow"
+           aria-label="전화 상담하기 010-2969-2842"
+           title="전화 상담하기">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" fill="currentColor"/>
+          </svg>
+          <span class="header-btn-text">전화 상담하기</span>
+        </a>
+
+        <a href="https://open.kakao.com/o/shO7Juii"
+           class="header-btn header-btn-kakao"
+           target="_blank"
+           rel="nofollow noopener noreferrer"
+           aria-label="카카오톡 상담하기"
+           title="카카오톡 상담하기">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3C6.48 3 2 6.69 2 11.25c0 2.88 1.74 5.41 4.38 6.94L5.5 21l3.58-1.88C10.15 19.35 11.06 19.5 12 19.5c5.52 0 10-3.69 10-8.25S17.52 3 12 3z" fill="currentColor"/>
+          </svg>
+          <span class="header-btn-text">카카오톡 상담하기</span>
+        </a>
+
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN ==================== -->
+  <main id="site-main" role="main">
+    <div class="body-container">
+      <div class="main-image-wrap">
+
+        <!-- 고해상도 메인 이미지 (1080×4611px) -->
+        <img
+          class="main-img"
+          src="main_image.png"
+          alt="우드티켓 - 정식등록업체 상품권 매입 전문 | 각종 상품권 24시간 빠르고 안전한 매입 | 전화 010-2969-2842"
+          width="1080"
+          height="4611"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+
+        <!-- ── 섹션1: 고객센터 버튼 영역 ── -->
+        <a class="img-overlay ov-tel-1"
+           href="tel:010-2969-2842"
+           rel="nofollow"
+           aria-label="전화 상담하기"
+           title="전화 상담하기 010-2969-2842"></a>
+
+        <a class="img-overlay ov-kko-1"
+           href="https://open.kakao.com/o/shO7Juii"
+           target="_blank"
+           rel="nofollow noopener noreferrer"
+           aria-label="카카오톡 상담하기"
+           title="카카오톡 상담하기"></a>
+
+        <!-- ── 섹션2: 하단 마지막 버튼 영역 ── -->
+        <a class="img-overlay ov-tel-2"
+           href="tel:010-2969-2842"
+           rel="nofollow"
+           aria-label="전화 상담하기"
+           title="전화 상담하기 010-2969-2842"></a>
+
+        <a class="img-overlay ov-kko-2"
+           href="https://open.kakao.com/o/shO7Juii"
+           target="_blank"
+           rel="nofollow noopener noreferrer"
+           aria-label="카카오톡 상담하기"
+           title="카카오톡 상담하기"></a>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer id="site-footer" role="contentinfo">
+    <div class="footer-inner">
+
+      <div class="footer-logo">
+        <img src="7zmbyuco.png" alt="우드티켓 로고" width="140" height="38" />
+      </div>
+
+      <div class="footer-bar"></div>
+
+      <address class="footer-info">
+        <p class="footer-rep">대표 : 이동현</p>
+        <div class="footer-biz">
+          <span>상호 : 우드티켓</span>
+          <span>|</span>
+          <span>대표전화 : 010-2969-2842</span>
+        </div>
+         <div class="footer-biz">
+		  <span>개인정보책임관리자 : 김소정</span>
+        </div>
+      </address>
+
+      <p class="footer-copy">
+        Copyright &copy; 우드티켓. All rights reserved.
+      </p>
+
+    </div>
+  </footer>
+
+  <!-- ==================== FLOATING BUTTONS ==================== -->
+  <div class="floating-wrap" role="complementary" aria-label="빠른 상담 버튼">
+
+    <a href="tel:010-2969-2842"
+       class="float-btn float-btn-tel"
+       rel="nofollow"
+       aria-label="전화 문의 010-2969-2842"
+       title="전화 문의">
+      <span class="float-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" fill="currentColor"/>
+        </svg>
+      </span>
+      <span>전화 문의</span>
+    </a>
+
+    <a href="https://open.kakao.com/o/shO7Juii"
+       class="float-btn float-btn-kakao"
+       target="_blank"
+       rel="nofollow noopener noreferrer"
+       aria-label="카카오톡 상담"
+       title="카카오톡 상담">
+      <span class="float-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 3C6.48 3 2 6.69 2 11.25c0 2.88 1.74 5.41 4.38 6.94L5.5 21l3.58-1.88C10.15 19.35 11.06 19.5 12 19.5c5.52 0 10-3.69 10-8.25S17.52 3 12 3z" fill="currentColor"/>
+        </svg>
+      </span>
+      <span>카카오톡 상담</span>
+    </a>
+
+  </div>
+
+</body>
+</html>
